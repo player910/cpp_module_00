@@ -1,7 +1,8 @@
 #include "Phonebook.hpp"
+#include <iomanip>
 
 PhoneBook::PhoneBook()
-	: _contacts(), _count(0), _current_user(0)
+	: _contacts(), _count(0), _totalCount(0)
 {
 
 }
@@ -77,6 +78,7 @@ void PhoneBook::addNewContact()
 		}
 		_contacts[_count] = newContact;
 		_count++;
+		_totalCount++;
 		if (_count == 8)
 			_count = 0;
 		std::cout << "New contact added" << std::endl;
@@ -86,6 +88,22 @@ void PhoneBook::addNewContact()
 
 void PhoneBook::searchContact()
 {
+	if (!_totalCount)
+	{
+		std::cout << "Empty Phonebook" << std::endl;
+		return ;
+	}
+	std::cout << std::setw(10) << "INDEX|" << std::setw(10) << "FIRST NAME|" <<
+		std::setw(10) << "LAST NAME|" << std::setw(10) << "NICKNAME" << std::endl; 
+	int i = 0;
+
+	while(i < _totalCount)
+	{
+		int index = i % 8;
+		std::cout << std::setw(10) << index <<"|" << std::setw(10) << _contacts[index].getFirstName() + "|" <<
+			std::setw(10) << _contacts[index].getLastName() + "|" << _contacts[index].getNickName() << std::endl; 	
+		i++;
+	}
 
 }
 
@@ -107,4 +125,19 @@ bool PhoneBook::isWholeNum(std::string newNum)
 		i++;
 	}
 	return (true);
+}
+
+std::string PhoneBook::truncateString(std::string str) const
+{
+	if (str.length() <= 10)
+		return (str);
+	int i = 0;
+	std::string trunStr;
+	while(i < 10)
+	{
+		trunStr[i] = str[i];
+		i++;
+	}
+	trunStr[i] = '.';
+	return (trunStr);
 }
