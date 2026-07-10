@@ -4,7 +4,7 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 HEAD = Contact.hpp Phonebook.hpp
-SRCS = Contact.cpp Phonebook.cpp
+SRCS = Contact.cpp Phonebook.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)

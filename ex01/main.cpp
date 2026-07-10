@@ -7,7 +7,7 @@ int main()
 	std::string in;
 	while (1)
 	{
-		std::cout << "Write a command: " << std::endl;
+		std::cout << "Write a command: ";
 		getline(std::cin, in);
 		if (in == "ADD")
 		{
