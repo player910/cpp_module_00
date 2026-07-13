@@ -1,8 +1,9 @@
 #include "Phonebook.hpp"
 #include <iomanip>
+#include <sstream>
 
 PhoneBook::PhoneBook()
-	: _contacts(), _count(0), _totalCount(0)
+	: _contacts(), _totalCount(0)
 {
 
 }
@@ -61,7 +62,10 @@ void PhoneBook::addNewContact()
 				continue;
 			}
 			if (!isWholeNum(str))
+			{
+				std::cout << "Phone Number isn't valid" << std::endl;
 				continue;
+			}
 			newContact.setPhoneNumber(str);
 			finder++;
 		}
@@ -76,11 +80,8 @@ void PhoneBook::addNewContact()
 			}
 			newContact.setDarkestSecret(str);
 		}
-		_contacts[_count] = newContact;
-		_count++;
+		_contacts[_totalCount % 8] = newContact;
 		_totalCount++;
-		if (_count == 8)
-			_count = 0;
 		std::cout << "New contact added" << std::endl;
 		break ;
 	}
@@ -93,23 +94,56 @@ void PhoneBook::searchContact()
 		std::cout << "Empty Phonebook" << std::endl;
 		return ;
 	}
-	std::cout << std::setw(10) << "INDEX|" << std::setw(10) << "FIRST NAME|" <<
-		std::setw(10) << "LAST NAME|" << std::setw(10) << "NICKNAME" << std::endl; 
-	int i = 0;
+	std::cout << std::setw(10) << "INDEX" << "|" << std::setw(10) << "FIRST NAME" << "|" <<
+		std::setw(10) << "LAST NAME" << "|" << std::setw(10) << "NICKNAME" << std::endl;
 
-	while(i < _totalCount)
+	int i = 0;
+	int border;
+	if (_totalCount > 8)
+		border = 8;
+	else
+		border = _totalCount;
+	while(i < border)
 	{
-		int index = i % 8;
-		std::cout << std::setw(10) << index <<"|" << std::setw(10) << _contacts[index].getFirstName() + "|" <<
-			std::setw(10) << _contacts[index].getLastName() + "|" << _contacts[index].getNickName() << std::endl; 	
+		std::cout << std::setw(10) << i << "|" <<
+					 std::setw(10) << truncateString(_contacts[i].getFirstName()) << "|" <<
+					 std::setw(10) << truncateString(_contacts[i].getLastName()) << "|" <<
+					 std::setw(10) << truncateString(_contacts[i].getNickName()) <<
+					 std::endl;
 		i++;
 	}
-
+	std::cout << "Enter index: ";
+	std::string str;
+	getline(std::cin, str);
+	if (str.empty())
+	{
+		std::cout << "Index input can't be empty" << std::endl;
+		return ;
+	}
+	if (!isWholeNum(str))
+	{
+		std::cout << "Index input isn't a number" << std::endl;
+		return ;
+	}
+	int index;
+	std::stringstream ss;
+	ss << str;
+	ss >> index;
+	if (index >= border)
+	{
+		std::cout << "Invalid index" << std::endl;
+		return ;
+	}
+	std::cout << "First name: " << _contacts[index].getFirstName() << std::endl <<
+				 "Last name: " << _contacts[index].getLastName() << std::endl <<
+				 "Nickname: " << _contacts[index].getNickName() << std::endl <<
+				 "Phone number: " << _contacts[index].getPhoneNumber() << std::endl <<
+				 "Darkest secret: " << _contacts[index].getDarkestSecret() << std::endl;
 }
 
 void PhoneBook::exitProgram()
 {
-
+	std::cout << "Exitting the program..." << std::endl;
 }
 
 bool PhoneBook::isWholeNum(std::string newNum)
@@ -118,10 +152,7 @@ bool PhoneBook::isWholeNum(std::string newNum)
 	while(i < newNum.length())
 	{
 		if (newNum[i] < '0' || newNum[i] > '9')
-		{
-			std::cout << "Phone Number isn't valid" << std::endl;
 			return (false);
-		}
 		i++;
 	}
 	return (true);
@@ -129,15 +160,19 @@ bool PhoneBook::isWholeNum(std::string newNum)
 
 std::string PhoneBook::truncateString(std::string str) const
 {
-	if (str.length() <= 10)
-		return (str);
-	int i = 0;
-	std::string trunStr;
-	while(i < 10)
+	size_t len = str.length();
+	if (len > 10)
 	{
-		trunStr[i] = str[i];
-		i++;
+		std::string trunStr;
+		size_t i = 0;
+		while (i < 9)
+		{
+			trunStr += str[i];
+			i++;
+		}
+		trunStr += '.';
+		return (trunStr);
 	}
-	trunStr[i] = '.';
-	return (trunStr);
+	else
+		return (str);
 }
