@@ -6,7 +6,7 @@
 /*   By: ksahinoz <ksahinoz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/14 15:21:15 by ksahinoz          #+#    #+#             */
-/*   Updated: 2026/07/14 15:21:18 by ksahinoz         ###   ########.fr       */
+/*   Updated: 2026/07/21 14:55:04 by ksahinoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 		j = 0;
 		while(argv[i][j])
 		{
-			std::cout << (char)(toupper(argv[i][j]));
+			std::cout << (char)(std::toupper(argv[i][j]));
 			j++;
 		}	
 		i++;
