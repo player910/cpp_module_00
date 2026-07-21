@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Phonebook.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ksahinoz <ksahinoz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/14 15:21:47 by ksahinoz          #+#    #+#             */
+/*   Updated: 2026/07/21 13:21:37 by ksahinoz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Phonebook.hpp"
 #include <iomanip>
 #include <sstream>
+#include <cctype>
 
 PhoneBook::PhoneBook()
 	: _contacts(), _totalCount(0)
@@ -8,7 +21,7 @@ PhoneBook::PhoneBook()
 
 }
 
-void PhoneBook::addNewContact()
+bool PhoneBook::addNewContact()
 {
 	Contact newContact;
 	std::string str;
@@ -19,7 +32,12 @@ void PhoneBook::addNewContact()
 		{
 			std::cout << "First Name: ";
 			getline(std::cin, str);
-			if (str.empty())
+			if (std::cin.eof())
+			{
+				std::cout << "EOF detected, exiting..." << std::endl;
+				return (false);
+			}
+			if (str.empty() || !isValidWord(str))
 			{
 				std::cout << "First Name can't be empty" << std::endl;
 				continue;
@@ -32,7 +50,12 @@ void PhoneBook::addNewContact()
 		{
 			std::cout << "Last Name: ";
 			getline(std::cin, str);
-			if (str.empty())
+			if (std::cin.eof())
+			{
+				std::cout << "EOF detected, exiting..." << std::endl;
+				return (false);
+			}
+			if (str.empty() || !isValidWord(str))
 			{
 				std::cout << "Last Name can't be empty" << std::endl;
 				continue;
@@ -44,7 +67,12 @@ void PhoneBook::addNewContact()
 		{
 			std::cout << "Nickname: ";
 			getline(std::cin, str);
-			if (str.empty())
+			if (std::cin.eof())
+			{
+				std::cout << "EOF detected, exiting..." << std::endl;
+				return (false);
+			}
+			if (str.empty() || !isValidWord(str))
 			{
 				std::cout << "Nickname can't be empty" << std::endl;
 				continue;
@@ -56,7 +84,12 @@ void PhoneBook::addNewContact()
 		{
 			std::cout << "Phone Number: ";
 			getline(std::cin, str);
-			if (str.empty())
+			if (std::cin.eof())
+			{
+				std::cout << "EOF detected, exiting..." << std::endl;
+				return (false);
+			}
+			if (str.empty() || !isValidWord(str))
 			{
 				std::cout << "Phone Number can't be empty" << std::endl;
 				continue;
@@ -73,7 +106,12 @@ void PhoneBook::addNewContact()
 		{
 			std::cout << "Darkest Secret: ";
 			getline(std::cin, str);
-			if (str.empty())
+			if (std::cin.eof())
+			{
+				std::cout << "EOF detected, exiting..." << std::endl;
+				return (false);
+			}
+			if (str.empty() || !isValidWord(str))
 			{
 				std::cout << "Darkest Secret can't be empty" << std::endl;
 				continue;
@@ -85,14 +123,15 @@ void PhoneBook::addNewContact()
 		std::cout << "New contact added" << std::endl;
 		break ;
 	}
+	return (true);
 }
 
-void PhoneBook::searchContact()
+bool PhoneBook::searchContact()
 {
 	if (!_totalCount)
 	{
 		std::cout << "Empty Phonebook" << std::endl;
-		return ;
+		return (true);
 	}
 	std::cout << std::setw(10) << "INDEX" << "|" << std::setw(10) << "FIRST NAME" << "|" <<
 		std::setw(10) << "LAST NAME" << "|" << std::setw(10) << "NICKNAME" << std::endl;
@@ -115,15 +154,20 @@ void PhoneBook::searchContact()
 	std::cout << "Enter index: ";
 	std::string str;
 	getline(std::cin, str);
+	if (std::cin.eof())
+	{
+		std::cout << "EOF detected, exiting..." << std::endl;
+		return (false);
+	}
 	if (str.empty())
 	{
 		std::cout << "Index input can't be empty" << std::endl;
-		return ;
+		return (true);
 	}
 	if (!isWholeNum(str))
 	{
 		std::cout << "Index input isn't a number" << std::endl;
-		return ;
+		return (true);
 	}
 	int index;
 	std::stringstream ss;
@@ -132,13 +176,14 @@ void PhoneBook::searchContact()
 	if (index >= border)
 	{
 		std::cout << "Invalid index" << std::endl;
-		return ;
+		return (true);
 	}
 	std::cout << "First name: " << _contacts[index].getFirstName() << std::endl <<
 				 "Last name: " << _contacts[index].getLastName() << std::endl <<
 				 "Nickname: " << _contacts[index].getNickName() << std::endl <<
 				 "Phone number: " << _contacts[index].getPhoneNumber() << std::endl <<
 				 "Darkest secret: " << _contacts[index].getDarkestSecret() << std::endl;
+	return (true);				
 }
 
 void PhoneBook::exitProgram()
@@ -151,11 +196,24 @@ bool PhoneBook::isWholeNum(std::string newNum)
 	size_t i = 0;
 	while(i < newNum.length())
 	{
-		if (newNum[i] < '0' || newNum[i] > '9')
+		if (!std::isdigit(newNum[i]))
 			return (false);
 		i++;
 	}
 	return (true);
+}
+
+bool PhoneBook::isValidWord(std::string newWord)
+{
+	size_t len = newWord.length();
+	size_t i = 0;
+	while (i < len)
+	{
+		if (!std::isspace(newWord[i]))
+			return (true);
+		i++;
+	}
+	return (false);
 }
 
 std::string PhoneBook::truncateString(std::string str) const
